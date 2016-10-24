@@ -22,6 +22,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,28 +37,29 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(sequenceName = "seq_resultados" , name = "ID_SEQUENCE",allocationSize = 1)
-public class Resultados extends AbstractBean<Resultados, Long>{
-    
+@SequenceGenerator(sequenceName = "seq_resultados", name = "ID_SEQUENCE", allocationSize = 1)
+public class Resultados extends AbstractBean<Resultados, Long> {
+
+    @Column(name = "data_resultado", nullable = false, unique = false)
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dataResultados;
+
     @Column(nullable = false, unique = false)
-    private Date dataDosResultados;
-    
-    @Column(nullable = false, unique = false)
-    private int taxaDeAcerto;
-    
+    private double acerto;
+
     @ManyToOne
     private Usuario usuario;
-    
+
     @Enumerated(EnumType.STRING)
     private TipoDiagnostico diagnostico;
-    
+
     @Override
     public int compareTo(Resultados o) {
         int result;
-        if(o.getId().compareTo(this.getId())>0){
-            result=1;
-        }else{
-            result=0;
+        if (o.getId().compareTo(this.getId()) > 0) {
+            result = 1;
+        } else {
+            result = 0;
         }
         return result;
     }

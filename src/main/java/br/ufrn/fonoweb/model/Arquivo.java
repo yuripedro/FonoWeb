@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,29 +37,33 @@ import lombok.Setter;
 @SequenceGenerator(sequenceName = "seq_arquivo", name = "ID_SEQUENCE", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Arquivo extends AbstractBean<Arquivo, Long>{
+public class Arquivo extends AbstractBean<Arquivo, Long> {
+
     @Column(nullable = false, unique = false)
     private String nome;
+
     @Column(nullable = false, unique = false)
     private String desccricao;
-    @Column(nullable = false, unique = false)
+
+    @Column(name = "data_inclusao", nullable = false, unique = false)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataInclusao;
-    
+
     @OneToOne
     private DescritorVoz descritor;
-    
+
     @ManyToOne
     private Usuario usuario;
 
     @Override
     public int compareTo(Arquivo o) {
         int result;
-        if (o.getId().compareTo(this.getId())> 0) {
-            result =1;
-        }else{
-            result= 0 ;
+        if (o.getId().compareTo(this.getId()) > 0) {
+            result = 1;
+        } else {
+            result = 0;
         }
         return result;
     }
-    
+
 }

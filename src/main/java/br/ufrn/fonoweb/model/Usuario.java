@@ -1,7 +1,6 @@
 package br.ufrn.fonoweb.model;
 
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,19 +19,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario extends AbstractBean<Usuario, Long> {
-   
+
     @Column(nullable = false, unique = false)
     private String nome;
+    
     @Column(nullable = false)
     private String cpf;
-    
-    @OneToMany(mappedBy="usuario" , cascade = CascadeType.ALL ,orphanRemoval = true,
-            fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Arquivo> arquivos;
-    
-    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL,orphanRemoval = true,
-           fetch = FetchType.EAGER)
-   private List<Resultados> resultados;
+
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<Resultados> resultados;
 
     @Override
     public int compareTo(Usuario objeto) {

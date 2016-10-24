@@ -3,41 +3,126 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"   
       xmlns:h="http://java.sun.com/jsf/html"
-
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>.:: FonoWeb ::.</title>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+        <link href="#{resource['images/favicon.png']}" rel="shortcut icon"/>
+        <h:outputStylesheet name="style.css" />
+    </h:head>
     <body>  
         <h:form>  
             <p:outputPanel rendered="true" id="mainOutputPanel">  
-                <h:outputLabel value="Modo de operação: #{usuarioMBean.currentState}"/>  
-                <p:commandButton value="Cadastrar" actionListener="#{usuarioMBean.changeToInsertState()}" update="@form"/> 
 
-                <p:panel id="list"  
-                         rendered="#{usuarioMBean.listState}">  
-                    <f:facet name="header">  
-                        Pesquisar: <br/>
-                    </f:facet>  
+                <!-- Notificações e diálogos --> 
+                
+                <p:messages id="notificationMessages" showDetail="true" autoUpdate="true" closable="true" />
+                <p:confirmDialog global="true" id="id_confirm_msg">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                </p:confirmDialog>
 
-                </p:panel>  
                 <!-- bloco de edição ou inclusao -->  
+
+                <p:panel id="list" rendered="#{usuarioMBean.listState}">  
+                    <h:panelGrid columns="1" id="pg_list">  
+                        <p:column>
+                            <p:commandButton value="Novo" actionListener="#{usuarioMBean.changeToInsertState()}" update="@form"/>  
+                            <p:dataTable id="list_lazyDataTable" 
+                                         value="#{usuarioMBean.beans}"
+                                         var="usuario"
+                                         rendered="true"
+                                         paginator="true" paginatorPosition="bottom" 
+                                         rows="10"
+                                         emptyMessage="Nenhum registro encontrado."
+                                         currentPageReportTemplate="Exibindo de {startRecord} até {endRecord} do total de {totalRecords} registros."
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="5,10,15">
+                                <f:facet name="header">
+                                    Relação de usuários
+                                </f:facet>
+
+                                <p:column headerText="Id" sortBy="#{usuario.id}">
+                                    <h:outputText value="#{usuario.id}" />
+                                </p:column>
+
+                                <p:column headerText="Nome" sortBy="#{usuario.nome}" filterBy="#{usuario.nome}">
+                                    <h:outputText value="#{usuario.nome}" />
+                                </p:column>
+                                <p:column headerText="CPF" sortBy="#{usuario.cpf}" filterBy="#{usuario.cpf}">
+                                    <h:outputText value="#{usuario.cpf}" />
+                                </p:column>
+
+                                <p:column headerText="Ações" width="150" style="alignment-adjust: central" >
+
+                                    <p:commandButton actionListener="#{usuarioMBean.startUpdate(usuario.id)}" update="@form" icon="ui-icon-pencil" title="Editar" />
+                                    <p:commandButton actionListener="#{usuarioMBean.startDetail(usuario.id)}" update="@form" title="Detalhes" icon="ui-icon-search"/>
+                                    <p:commandButton actionListener="#{usuarioMBean.processDelete(usuario.id)}" update="@form" icon="ui-icon-trash" title="Excluir" >
+                                        <p:confirm header="Confirmação" message="Tem certeza que deseja excluir o registro?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:column>
+
+                    </h:panelGrid>
+                </p:panel>  
+
+                <!-- bloco de inclusao -->  
+
                 <p:panel id="insert" rendered="#{usuarioMBean.insertState}"> 
+                    <f:facet name="header">  
+                        Cadastro de usuários <br/>  
+                    </f:facet>  
                     <h:panelGrid columns="2" columnClasses="label, value">
                         <h:outputLabel value="Nome: "/>  
-                        <h:inputText value="#{usuarioMBean.bean.nome}" size="30" required="true" />  
+                        <h:inputText value="#{usuarioMBean.bean.nome}" size="30" />  
 
                         <h:outputLabel value="CPF "/>  
-                        <h:inputText value="#{usuarioMBean.bean.cpf}" size="30" required="true"/>  
+                        <h:inputText value="#{usuarioMBean.bean.cpf}" size="30"/>  
 
                     </h:panelGrid>
                     <p:commandButton value="Cadastrar" actionListener="#{usuarioMBean.processInsert()}" update="@form"/>  
                     <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
                 </p:panel>
-                <p:panel id="update"  
-                         rendered="#{usuarioMBean.updateState}">  
+
+                <!-- bloco de edição/update  -->  
+
+                <p:panel id="update"  rendered="#{usuarioMBean.updateState}">  
                     <f:facet name="header">  
-                        Detalhe: <br/>  
+                        Alteração de usuários <br/>  
                     </f:facet>  
+                    <h:panelGrid columns="2" columnClasses="label, value">
+                        <h:outputLabel value="Nome: "/>  
+                        <h:inputText value="#{usuarioMBean.bean.nome}" size="30" />  
+
+                        <h:outputLabel value="CPF "/>  
+                        <h:inputText value="#{usuarioMBean.bean.cpf}" size="30"/>  
+
+                    </h:panelGrid>
+                    <p:commandButton value="Alterar" actionListener="#{usuarioMBean.processUpdate()}" update="@form"/>  
+                    <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
                 </p:panel>  
+
+                <!-- bloco de detalhamento  -->  
+
+                <p:panel id="detail"  rendered="#{usuarioMBean.datailState}">  
+                    <f:facet name="header">  
+                        Detalhamento de usuário <br/>  
+                    </f:facet>  
+                    <h:panelGrid columns="2" columnClasses="label, value">
+                        <h:outputLabel value="Nome: "/>  
+                        <h:outputText value="#{usuarioMBean.bean.nome}" />  
+
+                        <h:outputLabel value="CPF "/>  
+                        <h:outputText value="#{usuarioMBean.bean.cpf}"/>  
+
+                    </h:panelGrid>
+                    <p:commandButton value="Alterar" actionListener="#{usuarioMBean.startUpdate(usuarioMBean.bean.id)}" update="@form"/>  
+                    <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
+                </p:panel>  
+
             </p:outputPanel>  
         </h:form>  
     </body> 

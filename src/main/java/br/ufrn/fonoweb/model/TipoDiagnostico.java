@@ -15,17 +15,6 @@
  */
 package br.ufrn.fonoweb.model;
 
-import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import lombok.Getter;
-
 /**
  *
  * @author yuri
@@ -36,7 +25,7 @@ public enum TipoDiagnostico {
     NORMAL(1), PATOLOGICA(2), EDEMA(3), OUTRAS_PATOLOGIAS(4);
 
 
-    private int classesDiagnostico;
+    private final int classesDiagnostico;
 
     private TipoDiagnostico(int classes) {
         classesDiagnostico = classes;
