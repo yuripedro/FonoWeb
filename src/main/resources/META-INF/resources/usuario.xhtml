@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <body>  
+        <h:form>  
+            <p:outputPanel rendered="true" id="mainOutputPanel">  
+                <h:outputLabel value="Modo de operação: #{usuarioMBean.currentState}"/>  
+                <p:commandButton value="Cadastrar" actionListener="#{usuarioMBean.changeToInsertState()}" update="@form"/> 
+
+                <p:panel id="list"  
+                         rendered="#{usuarioMBean.listState}">  
+                    <f:facet name="header">  
+                        Pesquisar: <br/>
+                    </f:facet>  
+
+                </p:panel>  
+                <!-- bloco de edição ou inclusao -->  
+                <p:panel id="insert" rendered="#{usuarioMBean.insertState}"> 
+                    <h:panelGrid columns="2" columnClasses="label, value">
+                        <h:outputLabel value="Nome: "/>  
+                        <h:inputText value="#{usuarioMBean.bean.nome}" size="30" required="true" />  
+
+                        <h:outputLabel value="CPF "/>  
+                        <h:inputText value="#{usuarioMBean.bean.cpf}" size="30" required="true"/>  
+
+                    </h:panelGrid>
+                    <p:commandButton value="Cadastrar" actionListener="#{usuarioMBean.processInsert()}" update="@form"/>  
+                    <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
+                </p:panel>
+                <p:panel id="update"  
+                         rendered="#{usuarioMBean.updateState}">  
+                    <f:facet name="header">  
+                        Detalhe: <br/>  
+                    </f:facet>  
+                </p:panel>  
+            </p:outputPanel>  
+        </h:form>  
+    </body> 
+</html>
