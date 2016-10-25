@@ -16,10 +16,12 @@
 package br.ufrn.fonoweb.model;
 
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,33 +31,34 @@ import lombok.Setter;
  *
  * @author yuri
  */
-@Entity
+@Entity(name = "descritor_voz")
 @Getter
 @Setter
 @SequenceGenerator(sequenceName = "seq_descritorvoz", name = "ID_SEQUENCE", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
 public class DescritorVoz extends AbstractBean<DescritorVoz, Long> {
-   
+
     @ManyToOne
-    private BancoDescritor bancoDescritor;
-    
+    private BancoDescritor banco;
+
     @OneToOne
     private Arquivo arquivo;
-    
+
     private Double[] descritor;
     private String descricao;
+
+    @Column(name = "data_ativacao")
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataAtivacao;
-    
-    
 
     @Override
     public int compareTo(DescritorVoz o) {
         int result;
-        if(o.getId().compareTo(this.getId())>0){
-            result=1;
-        }else{
-            result=0;
+        if (o.getId().compareTo(this.getId()) > 0) {
+            result = 1;
+        } else {
+            result = 0;
         }
         return result;
     }
