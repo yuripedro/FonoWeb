@@ -15,13 +15,13 @@
  */
 package br.ufrn.fonoweb.repository;
 
-import br.ufrn.fonoweb.model.Resultados;
+import br.ufrn.fonoweb.model.Resultado;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author yuri
  */
-public interface ResultadosRepository extends CrudRepository<Resultados, Long>{
+public interface ResultadosRepository extends CrudRepository<Resultado, Long>{
     
 }

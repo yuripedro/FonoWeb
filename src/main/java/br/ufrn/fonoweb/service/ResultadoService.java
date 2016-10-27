@@ -15,7 +15,7 @@
  */
 package br.ufrn.fonoweb.service;
 
-import br.ufrn.fonoweb.model.Resultados;
+import br.ufrn.fonoweb.model.Resultado;
 import javax.inject.Named;
 
 /**
@@ -23,6 +23,6 @@ import javax.inject.Named;
  * @author yuri
  */
 @Named
-public class ResultadosService extends CrudService<Resultados, Long>{
+public class ResultadoService extends CrudService<Resultado, Long>{
     
 }

@@ -55,9 +55,9 @@
                                     <h:outputText value="#{usuario.cpf}" />
                                 </p:column>
 
-                                <p:column headerText="Ações" width="150" style="alignment-adjust: central" >
+                                <p:column headerText="Ações" width="160" style="alignment-adjust: central" >
 
-                                    <p:commandButton actionListener="#{usuarioMBean.startUploadFile()}" update="@form" icon="ui-icon-document" title="Upload" />
+                                    <p:commandButton actionListener="#{usuarioMBean.startUploadFile(usuario.id)}" update="@form" icon="ui-icon-document" title="Upload" />
                                     <p:commandButton actionListener="#{usuarioMBean.startUpdate(usuario.id)}" update="@form" icon="ui-icon-pencil" title="Editar" />
                                     <p:commandButton actionListener="#{usuarioMBean.startDetail(usuario.id)}" update="@form" title="Detalhes" icon="ui-icon-search"/>
                                     <p:commandButton actionListener="#{usuarioMBean.processDelete(usuario.id)}" update="@form" icon="ui-icon-trash" title="Excluir" >
@@ -137,12 +137,13 @@
                                       update="notificationMessages" 
                                       sizeLimit="100000" 
                                       fileLimit="1" 
+                                      multiple="false"
                                       allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
                                       value="Carregar arquivo"
                                       />
-
                     </h:panelGrid>
                     <p:commandButton value="Voltar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
+                    <p:commandButton value="Salvar arquivo" actionListener="#{usuarioMBean.saveFiles()}" update="@form"/> 
                 </p:panel>  
 
             </p:outputPanel>  
