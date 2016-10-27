@@ -16,7 +16,19 @@
 package br.ufrn.fonoweb.service;
 
 import br.ufrn.fonoweb.model.Arquivo;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Named;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  *
@@ -24,5 +36,42 @@ import javax.inject.Named;
  */
 @Named
 public class ArquivoService extends CrudService<Arquivo, Long> {
-    
+
+    @Value("${app.dataStore}")
+    private String dataStore;
+
+    public void saveFile(String originalFile, byte[] contents) {
+        String fileName = this.dataStore.concat("/")
+                .concat(this.getEncodedFileName(contents))
+                .concat(".")
+                .concat(FilenameUtils.getExtension(originalFile));
+        try {
+            FileUtils.writeByteArrayToFile(new File(fileName), contents);
+        } catch (IOException ex) {
+            Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public byte[] openFile(String fileName) {
+        byte[] result = null;
+        try {
+            result = FileUtils.readFileToByteArray(new File(fileName));
+        } catch (IOException ex) {
+            Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    private String getEncodedFileName(byte[] contents) {
+        MessageDigest md = null;
+        String result = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+            md.update(contents);
+            result = new BigInteger(1, md.digest()).toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
 }

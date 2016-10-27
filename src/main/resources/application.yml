@@ -21,3 +21,6 @@ jsf:
     theme: cupertino
 jsf-spring-boot-starter:
   version: jsf-spring-boot-starter.version
+  
+app:
+    dataStore: /tmp
