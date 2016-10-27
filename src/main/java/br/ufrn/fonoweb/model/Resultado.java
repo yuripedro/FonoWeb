@@ -38,7 +38,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @SequenceGenerator(sequenceName = "seq_resultados", name = "ID_SEQUENCE", allocationSize = 1)
-public class Resultados extends AbstractBean<Resultados, Long> {
+public class Resultado extends AbstractBean<Resultado, Long> {
 
     @Column(name = "data_resultado", nullable = false, unique = false)
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -54,7 +54,7 @@ public class Resultados extends AbstractBean<Resultados, Long> {
     private TipoDiagnostico diagnostico;
 
     @Override
-    public int compareTo(Resultados o) {
+    public int compareTo(Resultado o) {
         int result;
         if (o.getId().compareTo(this.getId()) > 0) {
             result = 1;

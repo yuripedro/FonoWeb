@@ -15,7 +15,7 @@
  */
 package br.ufrn.fonoweb.view;
 
-import br.ufrn.fonoweb.model.Resultados;
+import br.ufrn.fonoweb.model.Resultado;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
@@ -25,6 +25,6 @@ import javax.inject.Named;
  */
 @Named
 @ViewScoped
-public class ResultadosMBean extends CrudMBean<Resultados, Long>{
+public class ResultadoMBean extends CrudMBean<Resultado, Long>{
     
 }

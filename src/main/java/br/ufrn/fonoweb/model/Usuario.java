@@ -1,6 +1,8 @@
 package br.ufrn.fonoweb.model;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,14 +28,23 @@ public class Usuario extends AbstractBean<Usuario, Long> {
     @Column(nullable = false)
     private String cpf;
 
-    @OneToMany(mappedBy = "usuario", orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<Arquivo> arquivos;
+    @OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    private Set<Arquivo> arquivos = new TreeSet<>();
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = true,
-            fetch = FetchType.LAZY)
-    private List<Resultados> resultados;
+            fetch = FetchType.EAGER)
+    private Set<Resultado> resultados = new TreeSet<>();
 
+    
+    public void addArquivo(Arquivo arquivo){
+        arquivos.add(arquivo);
+    }
+    
+    public void addResultado(Resultado resultado){
+        resultados.add(resultado);
+    }
+    
     @Override
     public int compareTo(Usuario objeto) {
         int result;

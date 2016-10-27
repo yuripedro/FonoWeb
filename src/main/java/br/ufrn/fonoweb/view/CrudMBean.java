@@ -65,6 +65,10 @@ public class CrudMBean<T extends Object, ID extends Serializable> extends BaseMB
         this.bean = bean;
     }
 
+    public void setBean(ID id) {
+        this.bean = crudService.findOne(id);
+    }
+
     public void findAll() {
         beans = crudService.findAll();
     }
