@@ -17,7 +17,7 @@
             <p:outputPanel rendered="true" id="mainOutputPanel">  
 
                 <!-- Notificações e diálogos --> 
-                
+
                 <p:messages id="notificationMessages" showDetail="true" autoUpdate="true" closable="true" />
                 <p:confirmDialog global="true" id="id_confirm_msg">
                     <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
@@ -57,6 +57,7 @@
 
                                 <p:column headerText="Ações" width="150" style="alignment-adjust: central" >
 
+                                    <p:commandButton actionListener="#{usuarioMBean.startUploadFile()}" update="@form" icon="ui-icon-document" title="Upload" />
                                     <p:commandButton actionListener="#{usuarioMBean.startUpdate(usuario.id)}" update="@form" icon="ui-icon-pencil" title="Editar" />
                                     <p:commandButton actionListener="#{usuarioMBean.startDetail(usuario.id)}" update="@form" title="Detalhes" icon="ui-icon-search"/>
                                     <p:commandButton actionListener="#{usuarioMBean.processDelete(usuario.id)}" update="@form" icon="ui-icon-trash" title="Excluir" >
@@ -121,6 +122,27 @@
                     </h:panelGrid>
                     <p:commandButton value="Alterar" actionListener="#{usuarioMBean.startUpdate(usuarioMBean.bean.id)}" update="@form"/>  
                     <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
+                </p:panel>  
+
+                <!-- bloco de upload de arquivo  -->  
+
+                <p:panel id="uploadFile"  rendered="#{usuarioMBean.uploadFile}">  
+                    <f:facet name="header">  
+                        Carregamento de arquivo <br/>  
+                    </f:facet>  
+                    <h:panelGrid columns="2" columnClasses="label, value">
+                        <p:fileUpload fileUploadListener="#{usuarioMBean.handleFileUpload}" 
+                                      mode="advanced" 
+                                      dragDropSupport="false"
+                                      update="notificationMessages" 
+                                      sizeLimit="100000" 
+                                      fileLimit="1" 
+                                      allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                      value="Carregar arquivo"
+                                      />
+
+                    </h:panelGrid>
+                    <p:commandButton value="Voltar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
                 </p:panel>  
 
             </p:outputPanel>  
