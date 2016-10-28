@@ -23,4 +23,4 @@ jsf-spring-boot-starter:
   version: jsf-spring-boot-starter.version
   
 app:
-    dataStore: /tmp
+    dataStore: /tmp/

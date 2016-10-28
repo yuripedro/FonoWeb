@@ -43,7 +43,7 @@ public class ArquivoService extends CrudService<Arquivo, Long> {
         boolean status = false;
 
         try {
-            FileUtils.writeByteArrayToFile(new File(fileName), contents);
+            FileUtils.writeByteArrayToFile(new File(this.getDataStore().concat(fileName)), contents);
             status = true;
         } catch (IOException ex) {
             Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
@@ -54,16 +54,17 @@ public class ArquivoService extends CrudService<Arquivo, Long> {
     public byte[] openFile(String fileName) {
         byte[] result = null;
         try {
-            result = FileUtils.readFileToByteArray(new File(fileName));
+            result = FileUtils.readFileToByteArray(new File(this.getDataStore().concat(fileName)));
         } catch (IOException ex) {
             Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }
+    
     public boolean deleteFile(String fileName) {
         boolean result = true;
         try {
-            FileUtils.forceDelete(new File(fileName));
+            FileUtils.forceDelete(new File(this.getDataStore().concat(fileName)));
         } catch (IOException ex) {
             result = false;
             Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,9 +83,7 @@ public class ArquivoService extends CrudService<Arquivo, Long> {
             Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        result = this.getDataStore().concat("/")
-                .concat(result)
-                .concat(".")
+        result = result.concat(".")
                 .concat(FilenameUtils.getExtension(originalFile));
         return result;
     }

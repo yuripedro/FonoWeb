@@ -16,20 +16,23 @@
 package br.ufrn.fonoweb.view;
 
 import br.ufrn.fonoweb.model.Arquivo;
-import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import br.ufrn.fonoweb.model.Usuario;
 import br.ufrn.fonoweb.service.ArquivoService;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -37,12 +40,20 @@ import org.primefaces.model.UploadedFile;
  * @author yuri
  */
 @Named
-@ViewScoped
+@SessionScoped
 public class UsuarioMBean extends CrudMBean<Usuario, Long> {
 
     @Getter
     @Setter
     private boolean uploadFile;
+
+    @Getter
+    @Setter
+    private Arquivo filePlaying;
+
+    @Getter
+    @Setter
+    private StreamedContent media;
 
     @Getter
     @Setter
@@ -75,48 +86,17 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
 
     public void handleFileUpload(FileUploadEvent event) {
         if (event.getFile() != null) {
-            //listUploadedFiles.add(event.getFile());
             mapUploadedFiles.put(event.getFile().getFileName(), event.getFile().getContents());
+            saveFiles();
+            //addMessage(FacesMessage.SEVERITY_INFO, "Upload:", " Arquivo(s) carregado com sucesso");
+        } else {
+            addMessage(FacesMessage.SEVERITY_ERROR, "Upload:", " Não foi possível carregado o(s) arquivo(s)");
         }
-//        
-//        
-//        List<UploadedFile> tmpUploadedFiles = new ArrayList<>();
-//        tmpUploadedFiles.add(event.getFile());
-//        System.out.println("------>>>> passou no upload" );
-//
-//        for (UploadedFile uploadedFile : tmpUploadedFiles) {
-//            if (uploadedFile != null) {
-//                //uploadedFiles.add(uploadedFile);
-//                //System.out.println("------>>>> " + uploadedFile.getFileName());
-//                //this.saveFile(uploadedFile);
-//            } else {
-//                //addMessage(FacesMessage.SEVERITY_ERROR, null, " Falha ao carregar arquivo.");
-//            }
-//        }
-//        if (!tmpUploadedFiles.isEmpty()) {
-//            this.saveFiles(tmpUploadedFiles);
-//        } else {
-//            addMessage(FacesMessage.SEVERITY_ERROR, null, " Falha no carregamento de arquivo(s).");
-//        }
     }
 
     public void saveFiles() {
         String fileName = "";
         boolean result = true;
-
-//        try {
-//            for (UploadedFile uploadedFile : this.getListUploadedFiles()) {
-//                if (uploadedFile != null) {
-//                    fileName = uploadedFile.getFileName();
-//                    String codedFileName = arquivoService.getEncodedFileName(fileName, uploadedFile.getContents());
-//                    arquivoService.saveFile(codedFileName, uploadedFile.getContents());
-//                    //Adiciona os arquivos ao usuário
-//                    this.addArquivoUsuario(uploadedFile, codedFileName);
-//                }
-//            }
-//        } catch (Exception e) {
-//            result = false;
-//        }
         try {
             for (Map.Entry<String, byte[]> entrySet : mapUploadedFiles.entrySet()) {
                 fileName = entrySet.getKey();
@@ -127,19 +107,12 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
                 this.addArquivoUsuario(fileName, codedFileName);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             result = false;
+            addMessage(FacesMessage.SEVERITY_ERROR, "Upload:", " Não foi possível carregado o(s) arquivo(s)");
         }
-
         if (result == true) {
             processUpdate();
-            addMessage(FacesMessage.SEVERITY_INFO, null, "Arquivos carregados com sucesso.");
-        } else {
-//            for (UploadedFile uploadedFile : this.getListUploadedFiles()) {
-//                String codedFileName = arquivoService.getEncodedFileName(fileName, uploadedFile.getContents());
-//                arquivoService.deleteFile(codedFileName);
-//            }
-            addMessage(FacesMessage.SEVERITY_ERROR, null, " Falha ao processar arquivo(s).");
+            addMessage(FacesMessage.SEVERITY_INFO, "Upload:", " Arquivo(s) carregado com sucesso");
         }
     }
 
@@ -147,11 +120,25 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
         Arquivo arquivo = new Arquivo();
 
         arquivo.setDataInclusao(new Date());
-        arquivo.setDesccricao(descricao);
+        arquivo.setDescricao(descricao);
         //arquivo.setDescritor(new DescritorVoz());
         arquivo.setNome(fileName);
-
+        arquivo.setUsuario(getBean());
         getBean().addArquivo(arquivo);
     }
 
+    public void processDeleteArquivo(Arquivo arquivo) {
+        if (getBean().getArquivos().contains(arquivo)) {
+            getBean().getArquivos().remove(arquivo);
+            processUpdate();
+            setCurrentState(DATAIL_STATE);
+        }
+    }
+
+    public void play(Arquivo arquivo) {
+        if (!arquivo.equals(this.getFilePlaying())) {
+            setMedia(new DefaultStreamedContent(new ByteArrayInputStream(arquivoService.openFile(arquivo.getNome()))));
+            setFilePlaying(arquivo);
+        }
+    }
 }

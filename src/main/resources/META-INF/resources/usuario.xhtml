@@ -17,7 +17,6 @@
             <p:outputPanel rendered="true" id="mainOutputPanel">  
 
                 <!-- Notificações e diálogos --> 
-
                 <p:messages id="notificationMessages" showDetail="true" autoUpdate="true" closable="true" />
                 <p:confirmDialog global="true" id="id_confirm_msg">
                     <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
@@ -57,7 +56,7 @@
 
                                 <p:column headerText="Ações" width="160" style="alignment-adjust: central" >
 
-                                    <p:commandButton actionListener="#{usuarioMBean.startUploadFile(usuario.id)}" update="@form" icon="ui-icon-document" title="Upload" />
+                                    <p:commandButton actionListener="#{usuarioMBean.startUploadFile(usuario.id)}" update="@form" icon="ui-icon-video" title="Carregar audio" />
                                     <p:commandButton actionListener="#{usuarioMBean.startUpdate(usuario.id)}" update="@form" icon="ui-icon-pencil" title="Editar" />
                                     <p:commandButton actionListener="#{usuarioMBean.startDetail(usuario.id)}" update="@form" title="Detalhes" icon="ui-icon-search"/>
                                     <p:commandButton actionListener="#{usuarioMBean.processDelete(usuario.id)}" update="@form" icon="ui-icon-trash" title="Excluir" >
@@ -115,10 +114,35 @@
                     <h:panelGrid columns="2" columnClasses="label, value">
                         <h:outputLabel value="Nome: "/>  
                         <h:outputText value="#{usuarioMBean.bean.nome}" />  
-
                         <h:outputLabel value="CPF "/>  
                         <h:outputText value="#{usuarioMBean.bean.cpf}"/>  
 
+                        <h:outputLabel value="Arquivos "/>  
+                        <p:dataTable var="arquivo" value="#{usuarioMBean.bean.arquivos}">
+                            <!--
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{arquivo.nome}"/>
+                            </p:column>
+                            -->
+                            <p:column headerText="Nome original">
+                                <h:outputText value="#{arquivo.descricao}" />
+                            </p:column>
+                            <p:column headerText="Data de inclusão">
+                                <h:outputText value="#{arquivo.dataInclusao}" />
+                            </p:column>
+                            <p:column headerText="Ações" width="180" style="alignment-adjust: central; vertical-align: central" >
+                                <p:commandButton rendered="#{not (usuarioMBean.filePlaying eq arquivo)}" actionListener="#{usuarioMBean.play(arquivo)}" update="@form" icon="ui-icon-play" title="Play" />
+                                <p:media rendered="#{(usuarioMBean.filePlaying eq arquivo)}"
+                                         value="#{usuarioMBean.media}" 
+                                         width="170" 
+                                         height="35"
+                                         player="quicktime">
+                                </p:media>
+                                <p:commandButton rendered="#{not (usuarioMBean.filePlaying eq arquivo)}" actionListener="#{usuarioMBean.processDeleteArquivo(arquivo)}" update="@form" icon="ui-icon-trash" title="Excluir" >
+                                    <p:confirm header="Confirmação" message="Tem certeza que deseja excluir o registro?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
                     </h:panelGrid>
                     <p:commandButton value="Alterar" actionListener="#{usuarioMBean.startUpdate(usuarioMBean.bean.id)}" update="@form"/>  
                     <p:commandButton value="Cancelar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
@@ -134,16 +158,19 @@
                         <p:fileUpload fileUploadListener="#{usuarioMBean.handleFileUpload}" 
                                       mode="advanced" 
                                       dragDropSupport="false"
-                                      update="notificationMessages" 
-                                      sizeLimit="100000" 
                                       fileLimit="1" 
                                       multiple="false"
-                                      allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                      allowTypes="/(\.|\/)(mp3|wav|wma)$/" 
                                       value="Carregar arquivo"
+                                      label="Selecionar arquivo"
+                                      cancelLabel="Cancelar"
+                                      uploadLabel="Enviar arquivo"
                                       />
                     </h:panelGrid>
-                    <p:commandButton value="Voltar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/> 
+                    <p:commandButton value="Voltar" actionListener="#{usuarioMBean.changeToListState()}" update="@form"/>
+                    <!--
                     <p:commandButton value="Salvar arquivo" actionListener="#{usuarioMBean.saveFiles()}" update="@form"/> 
+                    -->
                 </p:panel>  
 
             </p:outputPanel>  

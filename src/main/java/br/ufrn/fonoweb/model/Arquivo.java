@@ -43,7 +43,7 @@ public class Arquivo extends AbstractBean<Arquivo, Long> {
     private String nome;
 
     @Column(nullable = false, unique = false)
-    private String desccricao;
+    private String descricao;
 
     @Column(name = "data_inclusao", nullable = false, unique = false)
     @Temporal(javax.persistence.TemporalType.DATE)
