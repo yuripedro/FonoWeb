@@ -73,9 +73,15 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
     public void startUploadFile(Long id) {
         setCurrentState(SEARCH_STATE);
         this.setUploadFile(true);
-        setBean(id);
+        setBean(findOne(id));
         listUploadedFiles.clear();
         mapUploadedFiles.clear();
+    }
+
+    @Override
+    public void changeToInsertState() {
+        this.setBean(null);
+        super.changeToInsertState();
     }
 
     @Override
