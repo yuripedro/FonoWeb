@@ -48,7 +48,7 @@ public class BancoDescritor extends AbstractBean<BancoDescritor, Long> {
     
     private String descricao;
     @OneToMany(mappedBy = "banco", orphanRemoval = true,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER)          //LAZY
     private List<DescritorVoz> descritores;
 
     @Override

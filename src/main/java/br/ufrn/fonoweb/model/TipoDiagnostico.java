@@ -22,7 +22,7 @@ package br.ufrn.fonoweb.model;
 
 public enum TipoDiagnostico {
 
-    NORMAL(1), PATOLOGICA(2), EDEMA(3), OUTRAS_PATOLOGIAS(4);
+    NORMAL(1), PATOLOGICA(2), EDEMA(3), Nodulo(4);
 
 
     private final int classesDiagnostico;

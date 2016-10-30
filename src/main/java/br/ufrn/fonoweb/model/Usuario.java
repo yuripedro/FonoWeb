@@ -29,11 +29,11 @@ public class Usuario extends AbstractBean<Usuario, Long> {
     private String cpf;
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER)             
     private Set<Arquivo> arquivos = new TreeSet<>();
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = true,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.EAGER)      
     private Set<Resultado> resultados = new TreeSet<>();
 
     
