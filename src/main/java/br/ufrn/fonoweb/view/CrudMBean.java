@@ -112,7 +112,7 @@ public class CrudMBean<T extends Object, ID extends Serializable> extends BaseMB
      * @param id
      */
     public void startUpdate(ID id) {
-        this.setBean(crudService.findOne(id));
+        this.setBean(crudService.findById(id).get());
         this.setCurrentState(UPDATE_STATE);
     }
 
@@ -122,12 +122,12 @@ public class CrudMBean<T extends Object, ID extends Serializable> extends BaseMB
      * @param id
      */
     public void startDetail(ID id) {
-        this.setBean(crudService.findOne(id));
+        this.setBean(crudService.findById(id).get());
         this.setCurrentState(DATAIL_STATE);
     }
 
     public T findOne(ID id) {
-        return crudService.findOne(id);
+        return crudService.findById(id).get();
     }
 
     /**
@@ -151,7 +151,7 @@ public class CrudMBean<T extends Object, ID extends Serializable> extends BaseMB
      */
     public void processDelete(ID id) {
         try {
-            T auxBean = crudService.findOne(id);
+            T auxBean = crudService.findById(id).get();
             crudService.delete(auxBean);
             findAll();
             addMessage(FacesMessage.SEVERITY_INFO, "Exclusão: ", "Operação realizada com sucesso.");
