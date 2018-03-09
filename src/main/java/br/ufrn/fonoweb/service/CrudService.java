@@ -15,9 +15,9 @@
  */
 package br.ufrn.fonoweb.service;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <ID>
  */
 @Transactional(readOnly = true)
-public class CrudService<T extends Object, ID extends Serializable> {
+public class CrudService<T extends Object, ID extends Object> {
 
     private CrudRepository<T, ID> repository;
 
@@ -39,8 +39,8 @@ public class CrudService<T extends Object, ID extends Serializable> {
     }
 
     @Transactional
-    public <S extends T> Iterable<S> save(Iterable<S> objetos) {
-        return repository.save(objetos);
+    public <S extends T> Iterable<S> saveAll(Iterable<S> objetos) {
+        return repository.saveAll(objetos);
     }
 
     @Transactional
@@ -49,13 +49,13 @@ public class CrudService<T extends Object, ID extends Serializable> {
     }
 
     @Transactional
-    public void delete(Iterable<? extends T> objetos) {
-        repository.delete(objetos);
+    public void deleteAll(Iterable<? extends T> objetos) {
+        repository.deleteAll(objetos);
     }
 
     @Transactional
-    public void delete(ID id) {
-        repository.delete(id);
+    public void deleteById(ID id) {
+        repository.deleteById(id);
     }
 
     @Transactional
@@ -68,8 +68,8 @@ public class CrudService<T extends Object, ID extends Serializable> {
         repository.deleteAll();
     }
 
-    public T findOne(ID id) {
-        return repository.findOne(id);
+    public Optional<T> findById(ID id) {
+        return repository.findById(id);
     }
 
     public List<T> findAll() {
@@ -80,12 +80,12 @@ public class CrudService<T extends Object, ID extends Serializable> {
         return result;
     }
 
-    public Iterable<T> findAll(Iterable<ID> ids) {
-        return repository.findAll(ids);
+    public Iterable<T> findAllById(Iterable<ID> ids) {
+        return repository.findAllById(ids);
     }
     public List<T> findAll(List<ID> ids) {
         List<T> result = new ArrayList();
-        for (T next : repository.findAll(ids)) {
+        for (T next : repository.findAllById(ids)) {
             result.add(next);
         }
         return result;
@@ -95,7 +95,7 @@ public class CrudService<T extends Object, ID extends Serializable> {
         return repository.count();
     }
 
-    public boolean exists(ID id) {
-        return repository.exists(id);
+    public boolean existsById(ID id) {
+        return repository.existsById(id);
     }
 }
