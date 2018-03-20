@@ -15,30 +15,46 @@
  */
 package br.ufrn.fonoweb.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author yuri
  */
-@Entity(name = "descritor_voz")
+@Entity
+@Table(name = "descritor_voz")
 @Getter
 @Setter
-@SequenceGenerator(sequenceName = "seq_descritorvoz", name = "ID_SEQUENCE", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DescritorVoz extends AbstractBean<DescritorVoz, Long> {
+@EqualsAndHashCode(exclude={"id", "banco", "arquivo"})
+@ToString(callSuper = false)
 
+public class DescritorVoz implements Serializable{
+
+    @Id
+    @SequenceGenerator(name = "id_descritorVoz", sequenceName = "seq_descritorvoz",  allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_descritorVoz")
+    private Long id;
+    
+    private static final long serialVersionUID = 1L;
     @ManyToOne
     private BancoDescritor banco;
 
@@ -52,7 +68,6 @@ public class DescritorVoz extends AbstractBean<DescritorVoz, Long> {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataAtivacao;
 
-    @Override
     public int compareTo(DescritorVoz o) {
         int result;
         if (o.getId().compareTo(this.getId()) > 0) {
@@ -62,5 +77,13 @@ public class DescritorVoz extends AbstractBean<DescritorVoz, Long> {
         }
         return result;
     }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
 }

@@ -15,32 +15,49 @@
  */
 package br.ufrn.fonoweb.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author yuri
  */
 @Entity
+@Table(name = "arquivo")
 @Getter
 @Setter
-@SequenceGenerator(sequenceName = "seq_arquivo", name = "ID_SEQUENCE", allocationSize = 1)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Arquivo extends AbstractBean<Arquivo, Long> {
+@EqualsAndHashCode(exclude={"id", "usuario", "descritor"})
+@ToString(callSuper = false)
+public class Arquivo implements Serializable{
+    @Id
+    @SequenceGenerator(name = "id_arquivo", sequenceName = "seq_arquivo", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_arquivo")
+    private Long id;
+    private static final long serialVersionUID = 1L;
 
     @Column(nullable = false, unique = false)
     private String nome;
+    
+    @Column(nullable = true, unique = false)
+    private String resultadoAnalise;
 
     @Column(nullable = false, unique = false)
     private String descricao;
@@ -55,7 +72,6 @@ public class Arquivo extends AbstractBean<Arquivo, Long> {
     @ManyToOne
     private Usuario usuario;
 
-    @Override
     public int compareTo(Arquivo o) {
         int result;
         if (o.getId().compareTo(this.getId()) > 0) {
@@ -64,6 +80,14 @@ public class Arquivo extends AbstractBean<Arquivo, Long> {
             result = 0;
         }
         return result;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }

@@ -130,15 +130,11 @@
                             <p:column headerText="Data de inclusão">
                                 <h:outputText value="#{arquivo.dataInclusao}" />
                             </p:column>
+                            <p:column headerText="Resultado da análise">
+                                <h:outputText value="#{arquivo.resultadoAnalise}" />
+                            </p:column>
                             <p:column headerText="Ações" width="180" style="alignment-adjust: central; vertical-align: central" >
-                                <p:commandButton rendered="#{not (usuarioMBean.filePlaying eq arquivo)}" actionListener="#{usuarioMBean.play(arquivo)}" update="@form" icon="ui-icon-play" title="Play" />
-                                <p:media rendered="#{(usuarioMBean.filePlaying eq arquivo)}"
-                                         value="#{usuarioMBean.media}" 
-                                         width="170" 
-                                         height="35"
-                                         player="quicktime">
-                                </p:media>
-                                <p:commandButton rendered="#{not (usuarioMBean.filePlaying eq arquivo)}" actionListener="#{usuarioMBean.processDeleteArquivo(arquivo)}" update="@form" icon="ui-icon-trash" title="Excluir" >
+                                <p:commandButton actionListener="#{usuarioMBean.processDeleteArquivo(arquivo)}" update="@form" icon="ui-icon-trash" title="Excluir" >
                                     <p:confirm header="Confirmação" message="Tem certeza que deseja excluir o registro?" icon="ui-icon-alert"/>
                                 </p:commandButton>
                             </p:column>

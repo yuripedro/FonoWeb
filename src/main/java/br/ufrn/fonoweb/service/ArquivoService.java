@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @Named
 public class ArquivoService extends CrudService<Arquivo, Long> {
+
     @Getter
     @Value("${app.dataStore}")
     private String dataStore;
@@ -60,15 +61,11 @@ public class ArquivoService extends CrudService<Arquivo, Long> {
         }
         return result;
     }
-    
+
     public boolean deleteFile(String fileName) {
-        boolean result = true;
-        try {
-            FileUtils.forceDelete(new File(this.getDataStore().concat(fileName)));
-        } catch (IOException ex) {
-            result = false;
-            Logger.getLogger(ArquivoService.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        boolean result;
+        File file=(new File(this.getDataStore().concat(fileName)));
+        result = file.delete();
         return result;
     }
 

@@ -19,20 +19,20 @@ import br.ufrn.fonoweb.model.Arquivo;
 import javax.inject.Named;
 import br.ufrn.fonoweb.model.Usuario;
 import br.ufrn.fonoweb.service.ArquivoService;
-import java.io.ByteArrayInputStream;
+import br.ufrn.fonoweb.service.VozClassifier;
+import br.ufrn.fonoweb.service.VozProcessor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.SessionScoped;
 import javax.inject.Inject;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -40,20 +40,11 @@ import org.primefaces.model.UploadedFile;
  * @author yuri
  */
 @Named
-@SessionScoped
 public class UsuarioMBean extends CrudMBean<Usuario, Long> {
 
     @Getter
     @Setter
     private boolean uploadFile;
-
-    @Getter
-    @Setter
-    private Arquivo filePlaying;
-
-    @Getter
-    @Setter
-    private StreamedContent media;
 
     @Getter
     @Setter
@@ -69,6 +60,12 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
 
     @Inject
     private ArquivoService arquivoService;
+    
+    @Inject
+    private VozProcessor vozProcessor;
+
+    @Inject
+    private VozClassifier vozClassifier;
 
     public void startUploadFile(Long id) {
         setCurrentState(SEARCH_STATE);
@@ -124,13 +121,14 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
 
     private void addArquivoUsuario(String descricao, String fileName) {
         Arquivo arquivo = new Arquivo();
-
         arquivo.setDataInclusao(new Date());
         arquivo.setDescricao(descricao);
         //arquivo.setDescritor(new DescritorVoz());
         arquivo.setNome(fileName);
         arquivo.setUsuario(getBean());
         getBean().addArquivo(arquivo);
+        arquivo.setResultadoAnalise(gerarDiagnostico(arquivo));
+
     }
 
     public void processDeleteArquivo(Arquivo arquivo) {
@@ -140,11 +138,17 @@ public class UsuarioMBean extends CrudMBean<Usuario, Long> {
             setCurrentState(DATAIL_STATE);
         }
     }
-
-    public void play(Arquivo arquivo) {
-        if (!arquivo.equals(this.getFilePlaying())) {
-            setMedia(new DefaultStreamedContent(new ByteArrayInputStream(arquivoService.openFile(arquivo.getNome()))));
-            setFilePlaying(arquivo);
+    public String gerarDiagnostico(Arquivo arquivo) {
+        String diagnostico = "Não analisado.";
+        try {
+            double[] descritorPaciente = null;
+            descritorPaciente = vozProcessor.gerar_classificador(0.5, 1300, 0.77, arquivoService.getDataStore().concat(arquivo.getNome()));
+            diagnostico = vozClassifier.resultadoDiagnostico(descritorPaciente);
+        } catch (Exception e) {
+            diagnostico = "Falha na análise!";
         }
+        return diagnostico;
+
     }
+
 }

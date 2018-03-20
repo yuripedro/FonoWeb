@@ -1,26 +1,41 @@
 spring: 
   datasource:
-    platform: postgres
     url: jdbc:postgresql://localhost:5432/ProjetoFono
     username: postgres
     password: postgres
-# Number of ms to wait before throwing an exception if no connection is available.
-    max-wait: 1000
-# Maximum number of active connections that can be allocated from this pool at the same time.
-    max-active: 4
-# Validate the connection before borrowing it from the pool.
-    test-on-borrow: false    
-  jpa:
+    hikari:
+        maximum-pool-size: 4
+        connection-test-query: SELECT 1
+
+jpa:        
     database: POSTGRESQL
     show-sql: true
-    hibernate:
-        naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
-jsf:
-  PROJECT_STAGE: Development
-  primefaces:
-    theme: cupertino
-jsf-spring-boot-starter:
-  version: jsf-spring-boot-starter.version
-  
+    properties:
+        hibernate:
+            temp.use_jdbc_metadata_defaults: false
+    
 app:
     dataStore: /tmp/
+    
+jsf:
+  PROJECT_STAGE: Development
+  FACELETS_LIBRARIES: /tags/tags.taglib.xml
+  primefaces:
+    theme: cupertino
+    moveScriptsToBottom: true
+joinfaces:
+  version: @project.parent.version@
+spring-boot:
+  version: @project.parent.parent.version@
+tomcat:
+  version: @tomcat.version@
+cdi:
+  version: @cdi.version@
+mojarra:
+  version: @mojarra.version@
+omnifaces:
+  version: @omnifaces.version@
+primefaces:
+  version: @primefaces.version@
+primefaces-extensions:
+  version: @primefaces-extensions.version@

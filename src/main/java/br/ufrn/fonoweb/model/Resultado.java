@@ -15,31 +15,47 @@
  */
 package br.ufrn.fonoweb.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  *
  * @author yuri
  */
 @Entity
+@Table(name = "resultado")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(sequenceName = "seq_resultados", name = "ID_SEQUENCE", allocationSize = 1)
-public class Resultado extends AbstractBean<Resultado, Long> {
+@EqualsAndHashCode(exclude={"id", "usuario", "diagnostico"})
+@ToString(callSuper = false)
 
+public class Resultado implements Serializable{
+    
+    @Id
+    @SequenceGenerator(name = "id_resultado", sequenceName = "seq_resultados",  allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_resultado")
+    private Long id;
+
+    private static final long serialVersionUID = 1L;
     @Column(name = "data_resultado", nullable = false, unique = false)
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataResultados;
@@ -53,7 +69,6 @@ public class Resultado extends AbstractBean<Resultado, Long> {
     @Enumerated(EnumType.STRING)
     private TipoDiagnostico diagnostico;
 
-    @Override
     public int compareTo(Resultado o) {
         int result;
         if (o.getId().compareTo(this.getId()) > 0) {
@@ -62,5 +77,12 @@ public class Resultado extends AbstractBean<Resultado, Long> {
             result = 0;
         }
         return result;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

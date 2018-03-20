@@ -16,7 +16,6 @@
 package br.ufrn.fonoweb.view;
 
 import br.ufrn.fonoweb.model.Arquivo;
-import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 /**
@@ -24,7 +23,6 @@ import javax.inject.Named;
  * @author yuri
  */
 @Named
-@ViewScoped
 public class ArquivoMBean extends CrudMBean<Arquivo, Long> {
     
 }
